@@ -16,18 +16,18 @@ def length_hardening_sweep(
     seed: int = 0,
 ) -> dict[str, Any]:
     rows = []
-    for L in lengths:
+    for length in lengths:
         asrs = []
         plateaus = []
         agrees = []
         for i, item in enumerate(items):
-            out = gcg_attack(item, steps=30, prompt_len=L, seed=seed + i)
+            out = gcg_attack(item, steps=30, prompt_len=length, seed=seed + i)
             asrs.append(float(out["result"]["success"]))
             plateaus.append(out["diagnostics"]["plateau_rate"])
             agrees.append(out["diagnostics"]["grad_swap_agreement_mean"])
         rows.append(
             {
-                "prompt_len": L,
+                "prompt_len": length,
                 "asr": float(np.mean(asrs)),
                 "mean_plateau_rate": float(np.mean(plateaus)),
                 "mean_grad_swap_agreement": float(np.mean(agrees)),

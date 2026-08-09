@@ -1,6 +1,6 @@
 import pytest
 from headroom.headroom.ladder import RUNGS, RUNG_CONSTRAINT, AttackResult, asr, headroom
-from headroom.headroom.judge import compliance_quality, is_refusal, judge
+from headroom.headroom.judge import is_refusal, judge
 
 @pytest.mark.parametrize("rung", list(RUNGS))
 def test_constraint(rung):

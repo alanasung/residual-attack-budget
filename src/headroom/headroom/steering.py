@@ -8,7 +8,7 @@ import numpy as np
 
 from .judge import judge
 from .ladder import AttackResult
-from .model_runtime import RuntimeModel, generate_text, materialize_request, try_load_causal_lm
+from .model_runtime import RuntimeModel, generate_text, materialize_request
 
 
 def extract_refusal_direction(
@@ -89,7 +89,6 @@ def steer_attack(
         import torch
 
         model = runtime.model
-        tok = runtime.tokenizer
         device = runtime.device
         n_layers = int(getattr(model.config, "num_hidden_layers", getattr(model.config, "n_layer", 2)))
         layer_idx = max(0, n_layers // 2)

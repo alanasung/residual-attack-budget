@@ -8,7 +8,7 @@ import numpy as np
 
 from .judge import judge
 from .ladder import AttackResult
-from .model_runtime import RuntimeModel, generate_text, materialize_request, try_load_causal_lm
+from .model_runtime import RuntimeModel, materialize_request, try_load_causal_lm
 
 
 def _synthetic_pgd(

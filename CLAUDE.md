@@ -4,8 +4,7 @@ Context for coding agents working in this repository.
 
 ## What this is
 
-A pilot research implementation of "The Attack Ladder: Quantifying Unexploited Headroom" targeting the SPAR
-Fall 2026 project "Measuring Headroom in Adversarial Evaluations" (mentor: Jamie Hayes,
+A pilot research implementation of "The Attack Ladder: Quantifying Unexploited Headroom" for the research agenda "Measuring Headroom in Adversarial Evaluations" (mentor: Jamie Hayes,
 Google DeepMind).
 
 ## Hard constraints

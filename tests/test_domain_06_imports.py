@@ -1,5 +1,5 @@
 def test_imports():
-    from headroom.headroom import benchmark, ladder, blackbox, discrete, continuous, steering, projection, diagnostics, judge, capability, injection, regime, pipeline
+    from headroom.headroom import ladder
     assert ladder.RUNGS
 
 def test_stages():

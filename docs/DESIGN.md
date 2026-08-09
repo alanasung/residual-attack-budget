@@ -224,7 +224,7 @@ resume, safe-name validation, and hard errors on version mismatch.
 
 Mentor(s): Jamie Hayes
 Affiliation(s): Google DeepMind
-SPAR posting: https://sparai.org/projects/f26/rec92cyMzSzUb2eLY
+Related posting: https://sparai.org/projects/f26/rec92cyMzSzUb2eLY
 
 ## 21. Glossary
 
@@ -261,7 +261,6 @@ Run `python orchestration/scaffold2.py` from the meta-repo root after template e
 ## Appendix: regeneration
 
 Run `python orchestration/scaffold2.py` from the meta-repo root after template edits.
-
 
 ## 23. Domain methodology: Attack Ladder
 

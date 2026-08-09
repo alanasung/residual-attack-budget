@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 RUNGS = ["direct","blackbox","gcg","pgd","steer","prefill"]
 
 def enrich_items(items, cfg):

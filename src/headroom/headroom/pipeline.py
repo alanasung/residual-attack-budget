@@ -7,6 +7,7 @@ from typing import Any
 
 from omegaconf import DictConfig
 
+from ._util import ensure_dir, read_json, stage_result, write_json
 from .benchmark import load_harmbench_subset
 from .blackbox import direct_request, estimate_blackbox_asr, pair_tap_search
 from .capability import run_capability_twins
@@ -19,7 +20,6 @@ from .model_runtime import try_load_causal_lm
 from .projection import projected_attack
 from .regime import select_saturation_regime
 from .steering import extract_refusal_direction, forced_prefill, steer_attack
-from ._util import ensure_dir, read_json, stage_result, write_json
 
 
 def _seed(cfg: DictConfig) -> int:
@@ -275,7 +275,9 @@ def stage_evaluate(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
     else:
         unwilling_rate = capability["rates"]["unwilling"]
         hr_unwilling = hr_all * (0.5 + 0.5 * unwilling_rate)
-    falsified = hr_all < FALSIFICATION["min_ceiling_minus_blackbox"]
+    threshold = FALSIFICATION["min_ceiling_minus_blackbox"]
+    assert isinstance(threshold, (int, float))
+    falsified = hr_all < float(threshold)
     metrics = {
         "asr_by_rung": {
             "direct": collect["metrics"]["asr_direct"],

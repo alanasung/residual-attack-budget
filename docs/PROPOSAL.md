@@ -3,7 +3,7 @@
 **Target project.** Measuring Headroom in Adversarial Evaluations
 **Mentor.** Jamie Hayes (Google DeepMind)
 **Research areas.** AI security; Evaluations; Misuse risk
-**Posting.** https://sparai.org/projects/f26/rec92cyMzSzUb2eLY
+**Related posting.** https://sparai.org/projects/f26/rec92cyMzSzUb2eLY
 
 ## Summary
 
@@ -47,7 +47,6 @@ reportable rather than a dead end.
 
 - Gibberish that merely fails to refuse is not a jailbreak. Success requires both non-refusal and on-topic, coherent compliance.
 - Embedding-space PGD can leave the token manifold entirely, making the upper bound unachievable for any real attacker. Report manifold distance alongside ASR so the bound is interpreted honestly.
-
 
 ## How the result should be interpreted
 

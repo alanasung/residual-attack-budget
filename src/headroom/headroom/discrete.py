@@ -58,14 +58,12 @@ def _synthetic_gcg(
 
 
 def _target_ids(tokenizer: Any, target: str, device: str):
-    import torch
 
     ids = tokenizer(target, add_special_tokens=False, return_tensors="pt")["input_ids"].to(device)
     return ids
 
 
 def _gcg_step_loss(model, input_embeds, target_ids):
-    import torch
     import torch.nn.functional as F
 
     out = model(inputs_embeds=input_embeds)
