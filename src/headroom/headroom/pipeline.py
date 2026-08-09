@@ -8,6 +8,7 @@ from typing import Any
 from omegaconf import DictConfig
 
 from ._util import ensure_dir, read_json, stage_result, write_json
+from .awareness import run_eval_awareness_arm
 from .benchmark import load_harmbench_subset
 from .blackbox import direct_request, estimate_blackbox_asr, pair_tap_search
 from .capability import run_capability_twins
@@ -251,7 +252,14 @@ def stage_evaluate(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
     runtime = try_load_causal_lm(model_name, revision=revision, force_synthetic=force)
     if runtime is None:
         force = True
-    diag = length_hardening_sweep(items[: min(8, len(items))], seed=_seed(cfg))
+    diag = length_hardening_sweep(
+        items[: min(8, len(items))],
+        seed=_seed(cfg),
+        runtime=runtime,
+        force_synthetic=force,
+        model_name=model_name,
+        revision=revision,
+    )
     inj = run_injection_track(
         items,
         seed=_seed(cfg),
@@ -260,21 +268,30 @@ def stage_evaluate(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
         force_synthetic=force,
         runtime=runtime,
     )
+    awareness = run_eval_awareness_arm(
+        items,
+        seed=_seed(cfg),
+        runtime=runtime,
+        force_synthetic=force,
+        n_items=min(8, len(items)),
+    )
     # Headroom uses black-box ASR on the SAME kept population as stronger rungs.
     bb = collect["metrics"].get("asr_blackbox_search_kept", collect["metrics"]["asr_blackbox_search"])
     ceiling = fit["metrics"]["asr_prefill"]
     hr_all = headroom(ceiling, bb)
     unwilling_ids = set(capability.get("unwilling_ids") or [])
     ladder = read_json(run_dir / "artifacts" / "fit" / "ladder_results.json")
+    world2_mode = "unavailable"
     if unwilling_ids and ladder.get("forced_prefill"):
         pref_u = [r for r in ladder["forced_prefill"] if r["behavior_id"] in unwilling_ids]
-        # Black-box kept rows for unwilling subset
         bb_rows = read_json(run_dir / "artifacts" / "collect" / "blackbox.json").get("search_kept") or []
         bb_u = [r for r in bb_rows if r["behavior_id"] in unwilling_ids]
         hr_unwilling = headroom(asr(pref_u), asr(bb_u)) if pref_u and bb_u else 0.0
+        world2_mode = "measured_unwilling_subset"
     else:
-        unwilling_rate = capability["rates"]["unwilling"]
+        unwilling_rate = float(capability.get("rates", {}).get("unwilling", 0.0))
         hr_unwilling = hr_all * (0.5 + 0.5 * unwilling_rate)
+        world2_mode = "proxy_blend"
     threshold = FALSIFICATION["min_ceiling_minus_blackbox"]
     assert isinstance(threshold, (int, float))
     falsified = hr_all < float(threshold)
@@ -285,11 +302,22 @@ def stage_evaluate(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
             **{k.replace("asr_", ""): v for k, v in fit["metrics"].items() if k.startswith("asr_")},
         },
         "headroom_all": hr_all,
+        "headroom_unwilling": hr_unwilling,
         "headroom_unwilling_proxy": hr_unwilling,
+        "headroom_unwilling_mode": world2_mode,
+        "world2_claim_ok": world2_mode == "measured_unwilling_subset",
         "small_headroom_world2_compatible": bool(falsified),
         "falsification_threshold": FALSIFICATION["min_ceiling_minus_blackbox"],
         "length_sweep": diag["rows"],
+        "length_sweep_mode": diag.get("mode"),
         "injection_asr": inj["asr_by_rung"],
+        "eval_awareness": {
+            "arm": awareness["eval_awareness_arm"],
+            "cues_applied": awareness["cues_applied"],
+            "mode": awareness["mode"],
+            "delta_eval_minus_deploy": awareness["delta_eval_minus_deploy"],
+            "uniform_shift": awareness.get("uniform_shift"),
+        },
         "partial_order_note": "rungs relax different constraints; not a total strength ranking",
         "ladder_mode": fit["metrics"].get("mode"),
         "regime_n_kept": regime["n_kept"],
@@ -298,6 +326,7 @@ def stage_evaluate(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
     out = ensure_dir(run_dir / "artifacts" / "evaluate")
     write_json(out / "diagnostics.json", diag)
     write_json(out / "injection.json", {"asr_by_rung": inj["asr_by_rung"]})
+    write_json(out / "eval_awareness.json", awareness)
     payload = stage_result(task="evaluate", seed=_seed(cfg), n=len(items), metrics=metrics)
     write_json(out / "results.json", payload)
     return payload
