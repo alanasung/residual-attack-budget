@@ -1,4 +1,4 @@
-# Quantifying Unexploited Headroom in Adversarial Evaluations
+# When Zero Jailbreak ASR Still Leaves Room to Attack
 
 **Target project.** Measuring Headroom in Adversarial Evaluations
 **Research areas.** AI security; Evaluations; Misuse risk

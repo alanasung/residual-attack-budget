@@ -1,4 +1,4 @@
-"""The Attack Ladder: Quantifying Unexploited Headroom."""
+"""When Zero Jailbreak ASR Still Leaves Room to Attack."""
 
 from .ladder import RUNGS, headroom
 

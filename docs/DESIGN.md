@@ -1,14 +1,14 @@
-# Design Document: The Attack Ladder: Quantifying Unexploited Headroom
+# Design Document: When Zero Jailbreak ASR Still Leaves Room to Attack
 
 ## 1. Purpose
 
-This document is the method contract for **The Attack Ladder: Quantifying Unexploited Headroom**. It specifies what is
+This document is the method contract for **When Zero Jailbreak ASR Still Leaves Room to Attack**. It specifies what is
 measured, how measurement is instrumented, which artifacts are produced, and
 which claims are out of scope for the pilot profile.
 
 One-liner: Climb a ladder of attacks from black-box prompting to white-box internal steering, and read the headroom off the gap between the rungs.
 
-Hypothesis: Measured attack success rate is substantially a function of attacker access rather than of the model's intrinsic willingness. Relaxing the discrete constraint should recover ASR that black-box search could not find. Crucially, small or absent headroom is an accepted and informative outcome: it is evidence for a 'true robustness / toy-benchmark' world, and the design must be able to report it as a finding rather than as a failed experiment.
+Hypothesis: If stronger attacker access recovers ASR after black-box methods saturate, the bottleneck was search; if it does not, the benchmark may already be measuring refusal (or eval-aware compliance) rather than attack power.
 
 ## 2. Scope
 

@@ -1,15 +1,15 @@
 <p align="center">
-  <h1 align="center">Quantifying Unexploited Headroom in Adversarial Evaluations</h1>
-  <p align="center"><strong>Climb a ladder of attacks from black-box prompting to white-box steering, and read robustness off the gap between the rungs.</strong></p>
+  <h1 align="center">When Zero Jailbreak ASR Still Leaves Room to Attack</h1>
+  <p align="center"><strong>Separate search failure from genuine refusal by comparing black-box prompts, discrete optimizers, continuous relaxations, and internal steering.</strong></p>
   </p>
 
 ---
 
 ## Overview
 
-This repository implements experimental profiles for **Quantifying Unexploited Headroom in Adversarial Evaluations**. Config, caching, hooks, metrics, ablations, reporting, and CI are built for reproducible local pilots on small open-weight models.
+This repository implements experimental profiles for **When Zero Jailbreak ASR Still Leaves Room to Attack**. Config, caching, hooks, metrics, ablations, reporting, and CI are built for reproducible local pilots on small open-weight models.
 
-Hypothesis (one line): Measured attack success rate is substantially a function of attacker access rather than of the model's intrinsic willingness. Relaxing the discrete constraint should recover ASR that black-box search could not find. Crucially, small or absent headroom is an accepted and informative outcome: it is evidence for a 'true robustness / toy-benchmark' world, and the design must be able to report it as a finding rather than as a failed experiment.
+Hypothesis (one line): If stronger attacker access recovers ASR after black-box methods saturate, the bottleneck was search; if it does not, the benchmark may already be measuring refusal (or eval-aware compliance) rather than attack power.
 
 ## Motivation
 
@@ -86,8 +86,8 @@ registry and must pass the harness-validation script before any measured claim.
 ## Citation
 
 ```bibtex
-@misc{attack_headroom_pilot,
-  title        = {Quantifying Unexploited Headroom in Adversarial Evaluations},
+@misc{zero_asr_headroom,
+  title        = {When Zero Jailbreak ASR Still Leaves Room to Attack},
   author       = {Alana Sung},
   year         = {2026},
   howpublished = {Technical report},

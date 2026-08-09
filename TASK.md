@@ -1,4 +1,4 @@
-# TASK.md — The Attack Ladder: Quantifying Unexploited Headroom
+# TASK.md — When Zero Jailbreak ASR Still Leaves Room to Attack
 
 ID convention: `I##` infrastructure, `D##` data, `M##` modelling / hooks,
 `E##` experiments, `A##` ablations, `S##` sweeps, `R##` reporting.

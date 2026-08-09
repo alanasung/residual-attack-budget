@@ -3,7 +3,7 @@
 See [CLAUDE.md](CLAUDE.md) for the full build instructions; this file exists so
 that agents which look for `AGENTS.md` find the same context.
 
-Project: The Attack Ladder: Quantifying Unexploited Headroom
+Project: When Zero Jailbreak ASR Still Leaves Room to Attack
 Package: `src/headroom`
 Entry point: `python -m headroom --help`
 

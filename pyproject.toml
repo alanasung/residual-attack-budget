@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "headroom"
 version = "0.1.0"
-description = "Unexploited adversarial headroom via an attack-access ladder."
+description = "Decompose saturated jailbreak ASR into search limits versus real refusal."
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
 license = { text = "MIT" }

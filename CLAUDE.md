@@ -4,7 +4,7 @@ Context for coding agents working in this repository.
 
 ## What this is
 
-Research implementation of "Quantifying Unexploited Headroom in Adversarial Evaluations".
+Research implementation of "When Zero Jailbreak ASR Still Leaves Room to Attack".
 
 ## Hard constraints
 
