@@ -1,9 +1,7 @@
-# Proposal: The Attack Ladder: Quantifying Unexploited Headroom
+# Quantifying Unexploited Headroom in Adversarial Evaluations
 
 **Target project.** Measuring Headroom in Adversarial Evaluations
-**Mentor.** Jamie Hayes (Google DeepMind)
 **Research areas.** AI security; Evaluations; Misuse risk
-**Related posting.** https://sparai.org/projects/f26/rec92cyMzSzUb2eLY
 
 ## Summary
 
@@ -11,7 +9,7 @@ Climb a ladder of attacks from black-box prompting to white-box internal steerin
 
 ## Hypothesis
 
-Measured attack success rate is substantially a function of attacker access rather than of the model's intrinsic willingness. Relaxing the discrete constraint should recover ASR that black-box search could not find. Crucially, small or absent headroom is an accepted and informative outcome: it is evidence for the mentor's World 2, and the design must be able to report it as a finding rather than as a failed experiment.
+Measured attack success rate is substantially a function of attacker access rather than of the model's intrinsic willingness. Relaxing the discrete constraint should recover ASR that black-box search could not find. Crucially, small or absent headroom is an accepted and informative outcome: it is evidence for the motivating World 2, and the design must be able to report it as a finding rather than as a failed experiment.
 
 A hypothesis worth testing has to be able to lose. This one loses if the
 measurements below come back null, and the design is built so that a null is
@@ -21,12 +19,12 @@ reportable rather than a dead end.
 
 1. How much ASR is recovered at each rung: direct request, black-box template search, discrete token optimization, continuous embedding PGD, refusal-direction steering, and forced-prefill as the ceiling?
 2. Why does GCG break down as prompts lengthen and models harden? Measured through optimization diagnostics, gradient-to-token-swap agreement, loss trajectories, and plateau rates, not inferred from ASR alone.
-3. What is lost when the discrete constraint is relaxed to continuous embeddings, and how much survives projection back to realizable tokens? This is the mentor's second application question, made empirical.
+3. What is lost when the discrete constraint is relaxed to continuous embeddings, and how much survives projection back to realizable tokens? This is the motivating second application question, made empirical.
 4. Do eval-awareness cues shift the curve, and is the shift uniform across rungs or concentrated at the black-box end?
 
 ## Method
 
-1. Use a HarmBench subset as the primary benchmark so the result speaks to the mentor's motivating setting, with matched benign controls and no novel uplift content authored here.
+1. Use a HarmBench subset as the primary benchmark so the result speaks to the motivating motivating setting, with matched benign controls and no novel uplift content authored here.
 2. Implement each rung of the ladder against a small safety-tuned open model.
 3. Instrument GCG with optimization diagnostics and sweep prompt length and model hardening to characterize where and why it degrades.
 4. Extract the refusal direction from contrastive pairs for the steering rung.
@@ -50,7 +48,7 @@ reportable rather than a dead end.
 
 ## How the result should be interpreted
 
-Forced prefill demonstrates that the capability exists and is gated at the point of refusal. It does NOT by itself establish that PAIR or GCG failed for discrete-optimization reasons, and it is compatible with the mentor's World 2. The World 1 versus World 2 inference rests on the combination of the prefill ceiling, the projected-back-to-tokens rung, and the GCG optimization diagnostics, and the writeup must say so.
+Forced prefill demonstrates that the capability exists and is gated at the point of refusal. It does NOT by itself establish that PAIR or GCG failed for discrete-optimization reasons, and it is compatible with the motivating World 2. The World 1 versus World 2 inference rests on the combination of the prefill ceiling, the projected-back-to-tokens rung, and the GCG optimization diagnostics, and the writeup must say so.
 
 ## Feasibility
 
@@ -62,7 +60,6 @@ real GPU is available, so the reduction in scale is explicit rather than hidden.
 
 ## Relationship to the posting
 
-This proposal was checked against the mentor's verbatim posting by an
-independent model before implementation began. That check, the drift it found,
+This proposal was independent model before implementation began. That check, the drift it found,
 and the revisions made in response are recorded in
 [docs/ALIGNMENT.md](ALIGNMENT.md).

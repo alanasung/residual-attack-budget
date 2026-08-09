@@ -4,8 +4,7 @@ Context for coding agents working in this repository.
 
 ## What this is
 
-A pilot research implementation of "The Attack Ladder: Quantifying Unexploited Headroom" for the research agenda "Measuring Headroom in Adversarial Evaluations" (mentor: Jamie Hayes,
-Google DeepMind).
+Research implementation of "Quantifying Unexploited Headroom in Adversarial Evaluations".
 
 ## Hard constraints
 
@@ -21,7 +20,7 @@ Google DeepMind).
 
 Implement the stages in `src/headroom/stages.py`. The signatures,
 dependency edges, and docstring contracts are fixed; they encode an experiment
-design that was checked against the mentor's posting before implementation
+design that was checked against the motivating posting before implementation
 started. Do not renegotiate them. If a contract is genuinely wrong, change it in
 `docs/EXPERIMENT_PLAN.md` first and explain why.
 

@@ -1,18 +1,15 @@
 <p align="center">
-  <h1 align="center">The Attack Ladder: Quantifying Unexploited Headroom</h1>
-  <p align="center"><strong>Climb a ladder of attacks from black-box prompting to white-box internal steering, and read the headroom off the gap between the rungs.</strong></p>
+  <h1 align="center">Quantifying Unexploited Headroom in Adversarial Evaluations</h1>
+  <p align="center"><strong>Climb a ladder of attacks from black-box prompting to white-box steering, and read robustness off the gap between the rungs.</strong></p>
   </p>
 
 ---
 
 ## Overview
 
-This repository implements the pilot and full experimental profiles for
-**The Attack Ladder: Quantifying Unexploited Headroom**. Config, caching, hooks, metrics, ablations, reporting, and CI are built for reproducible local pilots on small open-weight models.
+This repository implements experimental profiles for **Quantifying Unexploited Headroom in Adversarial Evaluations**. Config, caching, hooks, metrics, ablations, reporting, and CI are built for reproducible local pilots on small open-weight models.
 
-Hypothesis (one line): Measured attack success rate is substantially a function of attacker access rather than of the model's intrinsic willingness. Relaxing the discrete constraint should recover ASR that black-box search could not find. Crucially, small or absent headroom is an accepted and informative outcome: it is evidence for the mentor's World 2, and the design must be able to report it as a finding rather than as a failed experiment.
-
-Mentors: Jamie Hayes (Google DeepMind).
+Hypothesis (one line): Measured attack success rate is substantially a function of attacker access rather than of the model's intrinsic willingness. Relaxing the discrete constraint should recover ASR that black-box search could not find. Crucially, small or absent headroom is an accepted and informative outcome: it is evidence for a 'true robustness / toy-benchmark' world, and the design must be able to report it as a finding rather than as a failed experiment.
 
 ## Motivation
 
@@ -89,13 +86,12 @@ registry and must pass the harness-validation script before any measured claim.
 ## Citation
 
 ```bibtex
-@misc{headroom_pilot,
-  title        = {The Attack Ladder: Quantifying Unexploited Headroom},
-  author       = {Jamie Hayes},
+@misc{attack_headroom_pilot,
+  title        = {Quantifying Unexploited Headroom in Adversarial Evaluations},
+  author       = {Alana Sung},
   year         = {2026},
-  howpublished = {Research pilot},
-  note         = {Climb a ladder of attacks from black-box prompting to white-box internal steering, and read the headroom off the gap between the rungs.},
-  }
+  howpublished = {Technical report},
+}
 ```
 
 ## License

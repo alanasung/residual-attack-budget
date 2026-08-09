@@ -5,11 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "headroom"
 version = "0.1.0"
-description = "Climb a ladder of attacks from black-box prompting to white-box internal steering, and read the headroom off the gap between the rungs."
+description = "Unexploited adversarial headroom via an attack-access ladder."
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
 license = { text = "MIT" }
-authors = [{ name = "Jamie Hayes" }]
+authors = [{ name = "Alana Sung" }]
 dependencies = [
   "torch==2.6.0",
   "transformers==4.48.0",

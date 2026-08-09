@@ -8,7 +8,7 @@ which claims are out of scope for the pilot profile.
 
 One-liner: Climb a ladder of attacks from black-box prompting to white-box internal steering, and read the headroom off the gap between the rungs.
 
-Hypothesis: Measured attack success rate is substantially a function of attacker access rather than of the model's intrinsic willingness. Relaxing the discrete constraint should recover ASR that black-box search could not find. Crucially, small or absent headroom is an accepted and informative outcome: it is evidence for the mentor's World 2, and the design must be able to report it as a finding rather than as a failed experiment.
+Hypothesis: Measured attack success rate is substantially a function of attacker access rather than of the model's intrinsic willingness. Relaxing the discrete constraint should recover ASR that black-box search could not find. Crucially, small or absent headroom is an accepted and informative outcome: it is evidence for a 'true robustness / toy-benchmark' world, and the design must be able to report it as a finding rather than as a failed experiment.
 
 ## 2. Scope
 
@@ -80,8 +80,8 @@ an explicit string field when a stable SHA is not yet recorded.
 
 | Policy | Behaviour |
 |---|---|
-| MPS fallback | `PYTORCH_ENABLE_MPS_FALLBACK=1` via `enable_mps_fallback()` |
-| Manifest | `mps_fallback_enabled` in `DeviceInfo.to_dict()` |
+| MPS fallback | `PYTORCH_ENABLE_MPS_FALLBACK=1` via `enable_mps_fallback` |
+| Manifest | `mps_fallback_enabled` in `DeviceInfo.to_dict` |
 | bfloat16 on MPS | Downgrade to float16 + warning |
 | CUDA missing | `HardwareError`, no silent CPU fallback |
 | Non-torch work | CPU only (numpy/sklearn/pandas/matplotlib) |
@@ -146,7 +146,7 @@ Each returns a structured dict with `task`, `seed`, `git_sha`, `elapsed_seconds`
 
 ## 13. Artifact cache
 
-Version-pinned store with atomic writes, append-only `manifest.jsonl`, `has()`
+Version-pinned store with atomic writes, append-only `manifest.jsonl`, `has`
 resume, safe-name validation, and hard errors on version mismatch.
 
 ## 14. Reporting contract
@@ -219,12 +219,6 @@ resume, safe-name validation, and hard errors on version mismatch.
 | Hook leakage | contextmanager `finally` removals |
 | Silent CPU fallback | `HardwareError` on missing accelerator |
 | Synthetic reported as measured | `is_synthetic` + CONTRIBUTING honesty rule |
-
-## 20. Mentors and affiliation
-
-Mentor(s): Jamie Hayes
-Affiliation(s): Google DeepMind
-Related posting: https://sparai.org/projects/f26/rec92cyMzSzUb2eLY
 
 ## 21. Glossary
 
