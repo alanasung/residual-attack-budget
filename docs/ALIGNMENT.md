@@ -1,12 +1,15 @@
-# ALIGNMENT.md — adversarial-headroom
+# ALIGNMENT — adversarial-headroom
 
-## Codex GPT-5 Sol (`codex exec -m gpt-5.6-sol -s read-only`)
-- **Verdict:** MINOR_DRIFT
-- **Summary:** The proposal is highly faithful to the requested attack-headroom ladder, with minor fixable gaps around capability-versus-willingness and the specificity of the black-box baseline.
+## Codex GPT-5 Sol
+- Verdict: MINOR_DRIFT
+- Summary: The proposal is highly faithful to the requested attack-headroom ladder, with minor fixable gaps around capability-versus-willingness and the specificity of the black-box baseline.
 
-## Grok (`cursor-grok-4.5-high-fast`)
-- **Verdict:** ALIGNED_WITH_NOTES (see `orchestration/out/grok/align/adversarial-headroom.md` when present)
-- Domain modules and DESIGN.md absorb MINOR_DRIFT items from the idea gate.
+## Grok
+- Verdict: MINOR_DRIFT
+- Summary: Right attack-ladder headroom question for World 1 vs 2, but drops prompt injections and risks missing the saturated-ASR regime on small models.
+- Detail: see `orchestration/out/grok/align/adversarial-headroom.md` and `adversarial-headroom.json`.
 
 ## Reconciliation
-Codex and Grok agree the idea tracks the mentor posting. Remaining drift is scoped as documented limitations (efficiency honesty, image path, attack-ladder specificity), not idea substitution. **Proceed.**
+Both MINOR_DRIFT. Injection track and saturation-regime selection appear in domain code; keep them first-class in pilots. Proceed with notes.
+
+Operating judgment: proceed.
