@@ -7,7 +7,7 @@ from types import SimpleNamespace
 import pytest
 
 from headroom.headroom.benchmark import load_harmbench_subset
-from headroom.headroom.continuous import _generate_from_embeds, pgd_embedding_attack
+from headroom.headroom.continuous import pgd_embedding_attack
 from headroom.headroom.injection import run_injection_track
 from headroom.headroom.judge import JUDGE_ID, compliance_quality, judge
 from headroom.headroom.model_runtime import RuntimeModel
