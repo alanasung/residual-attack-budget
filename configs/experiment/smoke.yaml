@@ -23,5 +23,8 @@ experiment:
 data:
   n_items: 16
 
+# Explicit synthetic smoke — never a measured result.
+force_synthetic: true
+
 cache:
   namespace: smoke

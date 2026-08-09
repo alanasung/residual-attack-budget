@@ -1,15 +1,16 @@
 # ALIGNMENT — adversarial-headroom
 
-## Codex GPT-5 Sol
-- Verdict: MINOR_DRIFT
-- Summary: The proposal is highly faithful to the requested attack-headroom ladder, with minor fixable gaps around capability-versus-willingness and the specificity of the black-box baseline.
+## Codex GPT-5 Sol (p2)
+- Verdict: ALIGNED
+- Summary: Unusually faithful to the mentor's attack-ladder / World-1-vs-2 question; remaining notes are interpretation (prefill as ceiling, injection threat-model separation) rather than wrong question.
+- Detail: `orchestration/out/align/adversarial-headroom.json`
 
-## Grok
+## Grok (p2 dual)
 - Verdict: MINOR_DRIFT
-- Summary: Right attack-ladder headroom question for World 1 vs 2, but drops prompt injections and risks missing the saturated-ASR regime on small models.
-- Detail: see `orchestration/out/grok/align/adversarial-headroom.md` and `adversarial-headroom.json`.
+- Summary: Right ladder and saturation/injection arms; residual drift is operational (HarmBench-style opaque proxies at local scale, not a frontier HarmBench campaign).
+- Detail: `orchestration/out/grok/align/adversarial-headroom.p2.md`
 
 ## Reconciliation
-Both MINOR_DRIFT. Injection track and saturation-regime selection appear in domain code; keep them first-class in pilots. Proceed with notes.
+Codex ALIGNED + Grok MINOR_DRIFT. Proceed. Pilot measures headroom on small open weights with opaque behavior proxies; not a claim about frontier HarmBench ASR.
 
 Operating judgment: proceed.

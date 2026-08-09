@@ -20,7 +20,17 @@ experiment:
   tags: [pilot, local]
 
 model:
-  batch_size: 8
+  batch_size: 4
+  # Safety-tuned instruct model for refusal/headroom; falls back uniformly to
+  # synthetic if weights are not cached locally.
+  name: Qwen/Qwen2.5-0.5B-Instruct
+  revision: main
+
+data:
+  n_items: 24
+
+# Measured path by default; synthetic only when weights cannot load.
+force_synthetic: false
 
 cache:
   namespace: pilot

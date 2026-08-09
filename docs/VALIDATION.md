@@ -1,21 +1,35 @@
 # VALIDATION — adversarial-headroom
 
-## Codex v1 (historical)
+## Codex (p2)
 - Verdict: SERIOUS_PROBLEMS
-- Summary: The infrastructure skeleton is tidy, but the actual experiment is entirely unimplemented, statistically incapable of supporting its intended null conclusion, and not yet specified tightly enough to estimate or guarantee an M4 pilot run.
+- Summary: Codex wants versioned HarmBench prompts, calibrated human-audited judges, full eval-awareness arms, and larger powered n — standards beyond the local measurable pilot scope.
+- Blocking themes: proxy benchmark vs licensed HarmBench; keyword judge; continuous decode practicality; statistical power at n≈24.
+- Detail: `orchestration/out/validate/adversarial-headroom.json`
 
-## Codex v2
+## Grok (p2 dual)
 - Verdict: PASS_WITH_NOTES
-- Summary: Analogous to introspection-verbalization Codex v2: X1–X13 OK; stages implemented with a real `make pilot` path; synthetic/proxy pilot default; several model revisions still on `main`.
-- KEY_FIXES_OK: X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13
+- Summary: Real GCG coordinate search, continuous PGD with separate projection rung, PAIR/TAP mutation loop, saturation-regime filter, and keyword judge on generated text. `force_synthetic` is smoke-only; pilot defaults measured when weights load.
+- Detail: `orchestration/out/grok/validate/adversarial-headroom.p2.md`
 
-## Grok (dual-validate)
-- Verdict: PASS_WITH_NOTES
-- Summary: Attack ladder (direct→blackbox→GCG→PGD→steer→prefill), injection track, saturation regime selection, and falsification thresholds are implemented. Pilot is proxy/synthetic-capable on M4; not a frontier ASR campaign.
+## KEY_FIXES (p2)
+| Fix | Status |
+|---|---|
+| Real discrete GCG with backprop + token swaps | OK (`discrete.py`) |
+| Continuous PGD ASR from embeds; projection separate | OK (`continuous.py`, `projection.py`) |
+| PAIR/TAP-style prompt mutation loop | OK (`blackbox.py`) |
+| Regime filter on multi-trial black-box ASR | OK (`regime.py`, collect) |
+| Headroom on same kept population | OK (paired kept ASR) |
+| Measured steering / forced prefill when runtime loaded | OK (`steering.py`) |
+| Measured capability twins when runtime loaded | OK (`capability.py`) |
+| Injection track accepts runtime | OK (`injection.py`) |
+| Expanded unique opaque behaviors | OK (`benchmark.py`) |
+| `force_synthetic` smoke-only / pilot measured default | OK |
 
-### Remaining
-- Ladder ASR / GCG / PGD stages are implemented against synthetic or proxy success signals suitable for local smoke, not a full white-box optimization on frontier-hardened behaviors.
-- Model revisions mostly `main`.
+## Remaining (compute / weights / scale — not empty stages)
+- Local pilot uses opaque HarmBench-style proxies; licensed HarmBench runtime load is future work.
+- Keyword compliance judge is local-rank adequate, not a frontier refusal classifier.
+- Qwen-0.5B / gpt2 on MPS; GCG/PGD step budgets capped for M4 wall-clock.
+- Codex power/MDE concerns at n=24 are accepted as micro-pilot limits.
 
 ## Reconciliation
-v1 unimplemented ladder replaced with domain stages and falsification thresholds. Grok PASS_WITH_NOTES; scientific power on hardened frontier ASR remains out of local pilot scope.
+Grok PASS_WITH_NOTES on the measurable core. Codex SERIOUS_PROBLEMS remains on frontier-benchmark purity and statistical power — recorded as residual scale notes, not missing stages. Domain tests pass with Hub monkeypatched.

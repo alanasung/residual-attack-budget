@@ -265,3 +265,5 @@ class Config:
     logging: LoggingConfig = field(default_factory=LoggingConfig)
     experiment: ExperimentConfig = field(default_factory=ExperimentConfig)
     run: RunConfig = field(default_factory=RunConfig)
+    # Measured ladder path by default when weights load; smoke sets this true.
+    force_synthetic: bool = False

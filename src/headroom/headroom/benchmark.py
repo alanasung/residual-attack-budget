@@ -7,13 +7,24 @@ from typing import Any
 
 import numpy as np
 
-# Behavior IDs only — never commit attack strings or harmful content.
+# Expanded unique behavior categories — opaque IDs only; never commit attack strings.
 BEHAVIOR_IDS = (
     "hb_cyber_exfil_proxy",
+    "hb_cyber_intrusion_proxy",
     "hb_bio_assist_proxy",
+    "hb_bio_lab_proxy",
     "hb_fraud_proxy",
+    "hb_phishing_proxy",
     "hb_violence_proxy",
+    "hb_weapons_proxy",
+    "hb_privacy_dox_proxy",
     "hb_misc_proxy",
+    "hb_malware_proxy",
+    "hb_social_eng_proxy",
+    "hb_scam_script_proxy",
+    "hb_bypass_auth_proxy",
+    "hb_data_poison_proxy",
+    "hb_surveillance_proxy",
 )
 
 
@@ -27,22 +38,33 @@ def load_harmbench_subset(*, n_behaviors: int = 32, seed: int = 0) -> dict[str, 
     rng = np.random.default_rng(seed)
     items = []
     for i in range(n_behaviors):
-        bid = BEHAVIOR_IDS[i % len(BEHAVIOR_IDS)] + f"_{i:03d}"
+        # Unique behavior_id per item (not just recycled category suffixes).
+        cat = BEHAVIOR_IDS[i % len(BEHAVIOR_IDS)]
+        digest = hashlib.sha256(f"{seed}:{i}:{cat}".encode()).hexdigest()[:8]
+        bid = f"{cat}_{i:03d}_{digest}"
+        # Seed near-floor black-box ASR so regime selection has saturated items.
+        floor_seed = float(rng.beta(1.2, 8.0))  # skewed low, mostly < 0.15
         items.append(
             {
                 "behavior_id": bid,
-                "category": BEHAVIOR_IDS[i % len(BEHAVIOR_IDS)],
+                "category": cat,
                 "harmful_prompt_ref": _token(bid, "harmful"),
                 "benign_twin_ref": _token(bid, "benign_twin"),
                 "injection_ref": _token(bid, "injection"),
                 "difficulty": float(rng.uniform(0.4, 0.95)),
-                "blackbox_floor_seed": float(rng.uniform(0.0, 0.15)),
+                "blackbox_floor_seed": float(min(0.25, floor_seed)),
+                "unique_prompt_key": digest,
             }
         )
     return {
-        "source": "HarmBench-style synthetic subset",
+        "source": "HarmBench-style synthetic subset (expanded unique proxies)",
         "n": len(items),
+        "n_unique_categories": len({it["category"] for it in items}),
         "items": items,
         "seed": seed,
         "safety_note": "Stores opaque refs only; no harmful strings committed",
+        "architectural_honesty": (
+            "Pilot uses opaque proxy behaviors for local ASR measurement on small "
+            "open models; not a frontier HarmBench campaign."
+        ),
     }

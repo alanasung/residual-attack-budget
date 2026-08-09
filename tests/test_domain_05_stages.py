@@ -3,7 +3,13 @@ from headroom.stages import STAGES
 import json
 
 def cfg():
-    return SimpleNamespace(run=SimpleNamespace(seed=0,profile="smoke"), data=SimpleNamespace(n_items=12), model=SimpleNamespace(name="x"), eval=SimpleNamespace(layers=[1]))
+    return SimpleNamespace(
+        run=SimpleNamespace(seed=0, profile="smoke"),
+        data=SimpleNamespace(n_items=12),
+        model=SimpleNamespace(name="x", revision=None),
+        eval=SimpleNamespace(layers=[1]),
+        force_synthetic=True,
+    )
 
 def test_registry():
     assert set(STAGES)=={"build_dataset","collect","fit","evaluate","report"}
