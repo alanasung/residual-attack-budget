@@ -55,6 +55,8 @@ def length_hardening_sweep(
         "rows": rows,
         "mode": "measured" if measured_frac > 0.5 else "synthetic",
         "measured_fraction": measured_frac,
+        "runtime_threaded": runtime is not None and not force_synthetic,
+        "force_synthetic": bool(force_synthetic),
         "finding": "ASR and grad/swap agreement degrade as prompt length grows",
     }
 

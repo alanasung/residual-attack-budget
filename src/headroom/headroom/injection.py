@@ -67,10 +67,16 @@ def run_injection_track(
                 prompt_len=4,
             )["result"]
         )
+    mode = "synthetic" if force_synthetic or runtime is None else "measured"
     return {
         "track": "injection",
         "asr_by_rung": {k: asr(v) for k, v in by_rung.items()},
         "results": by_rung,
-        "mode": "synthetic" if force_synthetic or runtime is None else "measured",
-        "note": "injection relaxes instruction hierarchy, not the same constraint as jailbreaks",
+        "mode": mode,
+        "runtime_threaded": runtime is not None and not force_synthetic,
+        "force_synthetic": bool(force_synthetic),
+        "note": (
+            "injection relaxes instruction hierarchy, not the same constraint as jailbreaks; "
+            "measured path requires a threaded runtime (no silent synthetic-only on evaluate)"
+        ),
     }

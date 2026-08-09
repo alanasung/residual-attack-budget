@@ -40,3 +40,15 @@ Grok PASS_WITH_NOTES on the measurable core. Codex SERIOUS_PROBLEMS remains on f
 - Claim gating tightened where proxies previously looked like evidence.
 - Domain tests green without Hub downloads.
 
+## P6 rigor pass
+
+| Fix | Status |
+|---|---|
+| Judge v3: refusal-priority; attacker prefixes not sole success; `judge_id` stamp | OK (`judge.py` `keyword_compliance_v3`) |
+| Continuous decode fidelity: fuller suffix embeds + prefix-context ASR decode | OK (`continuous.py`) |
+| Explicit `world_hypothesis` from awareness + headroom vs falsification threshold | OK (`pipeline.py` / diagnostics) |
+| Injection/evaluate runtime threading stamps (no silent synthetic-only) | OK |
+| Domain P6 tests Hub-free | OK (`test_domain_p6_judge_world.py`) |
+
+Residual: keyword judge is still local-heuristic (not a frontier refusal classifier); HarmBench proxies remain.
+

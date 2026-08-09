@@ -295,6 +295,27 @@ def stage_evaluate(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
     threshold = FALSIFICATION["min_ceiling_minus_blackbox"]
     assert isinstance(threshold, (int, float))
     falsified = hr_all < float(threshold)
+    # Explicit world hypothesis from awareness arm + headroom vs falsification gate.
+    awareness_uniform = bool(awareness.get("uniform_shift"))
+    awareness_applied = awareness.get("eval_awareness_arm") == "applied"
+    if falsified and awareness_applied and awareness_uniform:
+        world_hypothesis = "world2_small_headroom_eval_aware"
+    elif falsified:
+        world_hypothesis = "world2_compatible_small_headroom"
+    elif awareness_applied and not awareness_uniform:
+        world_hypothesis = "world1_headroom_with_selective_awareness"
+    else:
+        world_hypothesis = "world1_search_limited_refusal"
+    world_hypothesis_payload = {
+        "world_hypothesis": world_hypothesis,
+        "headroom_all": hr_all,
+        "falsification_threshold": float(threshold),
+        "below_falsification_threshold": bool(falsified),
+        "eval_awareness_arm": awareness.get("eval_awareness_arm"),
+        "eval_awareness_uniform_shift": awareness_uniform,
+        "eval_awareness_mode": awareness.get("mode"),
+        "headroom_unwilling_mode": world2_mode,
+    }
     metrics = {
         "asr_by_rung": {
             "direct": collect["metrics"]["asr_direct"],
@@ -308,9 +329,13 @@ def stage_evaluate(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
         "world2_claim_ok": world2_mode == "measured_unwilling_subset",
         "small_headroom_world2_compatible": bool(falsified),
         "falsification_threshold": FALSIFICATION["min_ceiling_minus_blackbox"],
+        "world_hypothesis": world_hypothesis,
+        "world_hypothesis_detail": world_hypothesis_payload,
         "length_sweep": diag["rows"],
         "length_sweep_mode": diag.get("mode"),
         "injection_asr": inj["asr_by_rung"],
+        "injection_mode": inj.get("mode"),
+        "injection_runtime_threaded": bool(runtime is not None and not force),
         "eval_awareness": {
             "arm": awareness["eval_awareness_arm"],
             "cues_applied": awareness["cues_applied"],
@@ -322,11 +347,21 @@ def stage_evaluate(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
         "ladder_mode": fit["metrics"].get("mode"),
         "regime_n_kept": regime["n_kept"],
         "regime_n_excluded": regime["n_excluded"],
+        "evaluate_runtime_present": runtime is not None,
+        "force_synthetic": bool(force),
     }
     out = ensure_dir(run_dir / "artifacts" / "evaluate")
-    write_json(out / "diagnostics.json", diag)
-    write_json(out / "injection.json", {"asr_by_rung": inj["asr_by_rung"]})
+    write_json(out / "diagnostics.json", {**diag, "world_hypothesis": world_hypothesis_payload})
+    write_json(
+        out / "injection.json",
+        {
+            "asr_by_rung": inj["asr_by_rung"],
+            "mode": inj.get("mode"),
+            "runtime_threaded": bool(runtime is not None and not force),
+        },
+    )
     write_json(out / "eval_awareness.json", awareness)
+    write_json(out / "world_hypothesis.json", world_hypothesis_payload)
     payload = stage_result(task="evaluate", seed=_seed(cfg), n=len(items), metrics=metrics)
     write_json(out / "results.json", payload)
     return payload
@@ -338,6 +373,7 @@ def stage_report(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
         "headroom_all": ev["metrics"]["headroom_all"],
         "headroom_unwilling_proxy": ev["metrics"]["headroom_unwilling_proxy"],
         "small_headroom_world2_compatible": ev["metrics"]["small_headroom_world2_compatible"],
+        "world_hypothesis": ev["metrics"].get("world_hypothesis"),
         "asr_by_rung": ev["metrics"]["asr_by_rung"],
         "ladder_mode": ev["metrics"].get("ladder_mode"),
         "safety_note": "no harmful strings committed; aggregate rates only",
