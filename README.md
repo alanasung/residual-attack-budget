@@ -110,7 +110,7 @@ MIT. Model weights and third-party datasets retain their upstream licenses.
 4. Chat templates are applied when available; the path is recorded.
 5. MPS sets `PYTORCH_ENABLE_MPS_FALLBACK` and records the flag.
 6. CI spanning zero is inconclusive; report MDE and run TOST before null claims.
-7. Pilot `n_items >= 512`.
+7. Local M4 pilot uses a micro `n_items` (see `configs/experiment/pilot.yaml`) and stamps `power_status=micro`; powered `n>=512` is a future scale target, not the current claim.
 8. Layer indices are validated against `n_layers`.
 
 ## Hardware note

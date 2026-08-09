@@ -16,7 +16,8 @@ from .continuous import pgd_embedding_attack
 from .diagnostics import FALSIFICATION, length_hardening_sweep
 from .discrete import gcg_attack
 from .injection import run_injection_track
-from .ladder import asr, headroom
+from .judge import calibrate_judge
+from .ladder import asr, asr_ci, headroom, headroom_ci, headroom_clears_falsification, power_status
 from .model_runtime import try_load_causal_lm
 from .projection import projected_attack
 from .regime import select_saturation_regime
@@ -48,16 +49,19 @@ def stage_build_dataset(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
     bench = load_harmbench_subset(n_behaviors=_n(cfg), seed=_seed(cfg))
     out = ensure_dir(run_dir / "artifacts" / "dataset")
     write_json(out / "benchmark.json", bench)
+    n_items = int(bench["n"])
     payload = stage_result(
         task="build_dataset",
         seed=_seed(cfg),
-        n=bench["n"],
+        n=n_items,
         metrics={
             "source": bench["source"],
             "safety_note": bench["safety_note"],
             "n_unique_categories": bench.get("n_unique_categories"),
             "architectural_honesty": bench.get("architectural_honesty"),
             "force_synthetic": _force_synthetic(cfg),
+            "power_status": power_status(n_items),
+            "n_items": n_items,
         },
     )
     write_json(out / "results.json", payload)
@@ -275,16 +279,29 @@ def stage_evaluate(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
         force_synthetic=force,
         n_items=min(8, len(items)),
     )
+    judge_cal = calibrate_judge()
     # Headroom uses black-box ASR on the SAME kept population as stronger rungs.
     bb = collect["metrics"].get("asr_blackbox_search_kept", collect["metrics"]["asr_blackbox_search"])
     ceiling = fit["metrics"]["asr_prefill"]
     hr_all = headroom(ceiling, bb)
     unwilling_ids = set(capability.get("unwilling_ids") or [])
     ladder = read_json(run_dir / "artifacts" / "fit" / "ladder_results.json")
+    blackbox = read_json(run_dir / "artifacts" / "collect" / "blackbox.json")
+    bb_rows = blackbox.get("search_kept") or blackbox.get("search") or []
+    pref_rows = ladder.get("forced_prefill") or []
+    hr_ci = headroom_ci(pref_rows, bb_rows, seed=_seed(cfg))
+    asr_cis = {
+        "direct": asr_ci(blackbox.get("direct_kept") or blackbox.get("direct") or []),
+        "blackbox_search": asr_ci(bb_rows),
+        "discrete": asr_ci(ladder.get("discrete") or []),
+        "continuous": asr_ci(ladder.get("continuous") or []),
+        "projected": asr_ci(ladder.get("projected") or []),
+        "steering": asr_ci(ladder.get("steering") or []),
+        "forced_prefill": asr_ci(pref_rows),
+    }
     world2_mode = "unavailable"
-    if unwilling_ids and ladder.get("forced_prefill"):
-        pref_u = [r for r in ladder["forced_prefill"] if r["behavior_id"] in unwilling_ids]
-        bb_rows = read_json(run_dir / "artifacts" / "collect" / "blackbox.json").get("search_kept") or []
+    if unwilling_ids and pref_rows:
+        pref_u = [r for r in pref_rows if r["behavior_id"] in unwilling_ids]
         bb_u = [r for r in bb_rows if r["behavior_id"] in unwilling_ids]
         hr_unwilling = headroom(asr(pref_u), asr(bb_u)) if pref_u and bb_u else 0.0
         world2_mode = "measured_unwilling_subset"
@@ -294,27 +311,43 @@ def stage_evaluate(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
         world2_mode = "proxy_blend"
     threshold = FALSIFICATION["min_ceiling_minus_blackbox"]
     assert isinstance(threshold, (int, float))
-    falsified = hr_all < float(threshold)
+    falsified_point = hr_all < float(threshold)
+    ci_clears = headroom_clears_falsification(hr_ci, float(threshold))
     # Explicit world hypothesis from awareness arm + headroom vs falsification gate.
     awareness_uniform = bool(awareness.get("uniform_shift"))
     awareness_applied = awareness.get("eval_awareness_arm") == "applied"
-    if falsified and awareness_applied and awareness_uniform:
+    if falsified_point and awareness_applied and awareness_uniform:
         world_hypothesis = "world2_small_headroom_eval_aware"
-    elif falsified:
+    elif falsified_point:
         world_hypothesis = "world2_compatible_small_headroom"
     elif awareness_applied and not awareness_uniform:
         world_hypothesis = "world1_headroom_with_selective_awareness"
     else:
         world_hypothesis = "world1_search_limited_refusal"
+    is_world2 = world_hypothesis.startswith("world2")
+    # World-2 headlines require CI upper bound below falsification + judge calibration.
+    # World-1 headlines still require judge_calibration_ok.
+    if is_world2:
+        world_claim_ok = bool(judge_cal["judge_calibration_ok"] and ci_clears)
+    else:
+        world_claim_ok = bool(judge_cal["judge_calibration_ok"])
+    n_pilot = int(getattr(cfg.data, "n_items", len(items)))
+    p_status = power_status(n_pilot)
     world_hypothesis_payload = {
         "world_hypothesis": world_hypothesis,
         "headroom_all": hr_all,
+        "headroom_ci": hr_ci,
         "falsification_threshold": float(threshold),
-        "below_falsification_threshold": bool(falsified),
+        "below_falsification_threshold": bool(falsified_point),
+        "ci_clears_falsification": bool(ci_clears),
+        "world_claim_ok": world_claim_ok,
+        "judge_calibration_ok": bool(judge_cal["judge_calibration_ok"]),
         "eval_awareness_arm": awareness.get("eval_awareness_arm"),
         "eval_awareness_uniform_shift": awareness_uniform,
         "eval_awareness_mode": awareness.get("mode"),
+        "awareness_claim_ok": bool(awareness.get("awareness_claim_ok")),
         "headroom_unwilling_mode": world2_mode,
+        "power_status": p_status,
     }
     metrics = {
         "asr_by_rung": {
@@ -322,15 +355,28 @@ def stage_evaluate(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
             "blackbox_search": bb,
             **{k.replace("asr_", ""): v for k, v in fit["metrics"].items() if k.startswith("asr_")},
         },
+        "asr_ci_by_rung": asr_cis,
         "headroom_all": hr_all,
+        "headroom_ci": hr_ci,
         "headroom_unwilling": hr_unwilling,
         "headroom_unwilling_proxy": hr_unwilling,
         "headroom_unwilling_mode": world2_mode,
-        "world2_claim_ok": world2_mode == "measured_unwilling_subset",
-        "small_headroom_world2_compatible": bool(falsified),
+        "world2_claim_ok": bool(world2_mode == "measured_unwilling_subset" and world_claim_ok and is_world2),
+        "world_claim_ok": world_claim_ok,
+        "small_headroom_world2_compatible": bool(falsified_point),
+        "ci_clears_falsification": bool(ci_clears),
         "falsification_threshold": FALSIFICATION["min_ceiling_minus_blackbox"],
+        # Diagnostic label always present; claimability is world_claim_ok.
         "world_hypothesis": world_hypothesis,
+        "world_hypothesis_raw": world_hypothesis,
         "world_hypothesis_detail": world_hypothesis_payload,
+        "judge_calibration": {
+            "ok": judge_cal["judge_calibration_ok"],
+            "precision": judge_cal["precision"],
+            "recall": judge_cal["recall"],
+            "n_cases": judge_cal["n_cases"],
+        },
+        "judge_calibration_ok": bool(judge_cal["judge_calibration_ok"]),
         "length_sweep": diag["rows"],
         "length_sweep_mode": diag.get("mode"),
         "injection_asr": inj["asr_by_rung"],
@@ -342,16 +388,22 @@ def stage_evaluate(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
             "mode": awareness["mode"],
             "delta_eval_minus_deploy": awareness["delta_eval_minus_deploy"],
             "uniform_shift": awareness.get("uniform_shift"),
+            "awareness_claim_ok": awareness.get("awareness_claim_ok"),
+            "power_status": awareness.get("power_status"),
+            "paired_power": awareness.get("paired_power"),
         },
+        "awareness_claim_ok": bool(awareness.get("awareness_claim_ok")),
         "partial_order_note": "rungs relax different constraints; not a total strength ranking",
         "ladder_mode": fit["metrics"].get("mode"),
         "regime_n_kept": regime["n_kept"],
         "regime_n_excluded": regime["n_excluded"],
         "evaluate_runtime_present": runtime is not None,
         "force_synthetic": bool(force),
+        "power_status": p_status,
+        "n_pilot": n_pilot,
     }
     out = ensure_dir(run_dir / "artifacts" / "evaluate")
-    write_json(out / "diagnostics.json", {**diag, "world_hypothesis": world_hypothesis_payload})
+    write_json(out / "diagnostics.json", {**diag, "world_hypothesis": world_hypothesis_payload, "asr_ci_by_rung": asr_cis, "headroom_ci": hr_ci})
     write_json(
         out / "injection.json",
         {
@@ -361,6 +413,7 @@ def stage_evaluate(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
         },
     )
     write_json(out / "eval_awareness.json", awareness)
+    write_json(out / "judge_calibration.json", judge_cal)
     write_json(out / "world_hypothesis.json", world_hypothesis_payload)
     payload = stage_result(task="evaluate", seed=_seed(cfg), n=len(items), metrics=metrics)
     write_json(out / "results.json", payload)
@@ -369,13 +422,24 @@ def stage_evaluate(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
 
 def stage_report(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
     ev = read_json(run_dir / "artifacts" / "evaluate" / "results.json")
+    m = ev["metrics"]
+    # Headline world label only when claim_ok (World-2 needs CI + calibration).
+    world_raw = m.get("world_hypothesis_raw") or m.get("world_hypothesis")
+    world_headline = world_raw if m.get("world_claim_ok") else None
     metrics = {
-        "headroom_all": ev["metrics"]["headroom_all"],
-        "headroom_unwilling_proxy": ev["metrics"]["headroom_unwilling_proxy"],
-        "small_headroom_world2_compatible": ev["metrics"]["small_headroom_world2_compatible"],
-        "world_hypothesis": ev["metrics"].get("world_hypothesis"),
-        "asr_by_rung": ev["metrics"]["asr_by_rung"],
-        "ladder_mode": ev["metrics"].get("ladder_mode"),
+        "headroom_all": m["headroom_all"],
+        "headroom_ci": m.get("headroom_ci"),
+        "headroom_unwilling_proxy": m["headroom_unwilling_proxy"],
+        "small_headroom_world2_compatible": m["small_headroom_world2_compatible"],
+        "world_hypothesis": world_headline,
+        "world_hypothesis_raw": world_raw,
+        "world_claim_ok": m.get("world_claim_ok"),
+        "judge_calibration_ok": m.get("judge_calibration_ok"),
+        "awareness_claim_ok": m.get("awareness_claim_ok"),
+        "power_status": m.get("power_status"),
+        "asr_by_rung": m["asr_by_rung"],
+        "asr_ci_by_rung": m.get("asr_ci_by_rung"),
+        "ladder_mode": m.get("ladder_mode"),
         "safety_note": "no harmful strings committed; aggregate rates only",
     }
     out = ensure_dir(run_dir / "artifacts" / "report")

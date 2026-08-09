@@ -52,3 +52,16 @@ Grok PASS_WITH_NOTES on the measurable core. Codex SERIOUS_PROBLEMS remains on f
 
 Residual: keyword judge is still local-heuristic (not a frontier refusal classifier); HarmBench proxies remain.
 
+## P7 rigor pass
+
+| Fix | Status |
+|---|---|
+| Wilson/bootstrap ASR CI per rung + `headroom_ci` | OK (`ladder.py` `asr_ci` / `headroom_ci`; evaluate stamps) |
+| `world_hypothesis` gated: CI clears falsification OR `world_claim_ok=false` | OK (`pipeline.py`) |
+| Local judge calibration fixture; P/R + `judge_calibration_ok`; refuse World-2 headlines if fail | OK (`judge.py` + `data/fixtures/judge_calibration.json`) |
+| Awareness-arm paired power; micro-pilot stamps `awareness_claim_ok=false` | OK (`awareness.py`) |
+| Honest pilot-n: `power_status=micro` stamps; README/DESIGN softened (no false n≥512 claim) | OK |
+| Domain P7 tests Hub-free | OK (`test_domain_p7_stats_claims.py`) |
+
+Residual: micro-pilot n remains underpowered for frontier World claims; keyword judge still local-heuristic.
+

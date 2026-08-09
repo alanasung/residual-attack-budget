@@ -119,7 +119,8 @@ An interval that spans zero is **inconclusive**, not evidence of a null.
 
 | Profile | `n_items` | Rationale |
 |---|---:|---|
-| pilot | ≥ 512 | After 60/20/20, test ≈ 102; bootstrap meaningful |
+| local M4 pilot | ~24 (`power_status=micro`) | Finishes on Apple Silicon; not powered for headline nulls |
+| powered target | ≥ 512 | After 60/20/20, test ≈ 102; bootstrap meaningful — future scale |
 | synthetic smoke | small | harness wiring only |
 | full | project-specific | documented per experiment |
 
