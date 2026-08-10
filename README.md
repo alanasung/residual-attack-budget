@@ -1,15 +1,15 @@
 <p align="center">
-  <h1 align="center">When Zero Jailbreak ASR Still Leaves Room to Attack</h1>
-  <p align="center"><strong>Separate search failure from genuine refusal by comparing black-box prompts, discrete optimizers, continuous relaxations, and internal steering.</strong></p>
+  <h1 align="center">What's Left After Easy Jailbreaks Fail</h1>
+  <p align="center"><strong>Compare black-box prompts, discrete optimizers, continuous relaxations, and steering once cheap attacks stop working.</strong></p>
   </p>
 
 ---
 
 ## Overview
 
-This repository implements experimental profiles for **When Zero Jailbreak ASR Still Leaves Room to Attack**. Config, caching, hooks, metrics, ablations, reporting, and CI are built for reproducible local pilots on small open-weight models.
+This repository implements experimental profiles for **What's Left After Easy Jailbreaks Fail**. Config, caching, hooks, metrics, ablations, reporting, and CI are built for reproducible local pilots on small open-weight models.
 
-Hypothesis (one line): If stronger attacker access recovers ASR after black-box methods saturate, the bottleneck was search; if it does not, the benchmark may already be measuring refusal (or eval-aware compliance) rather than attack power.
+Hypothesis (one line): If stronger attacker access recovers compliance after cheap prompts fail, the bottleneck was search cost; if not, residual refusal (or cue-sensitive compliance) may already dominate.
 
 ## Motivation
 
@@ -76,8 +76,7 @@ private data. Synthetic harness-validation outputs are labelled
 
 ## Status
 
-Shared spine is in place. Domain-specific stages land behind the experiment
-registry and must pass the harness-validation script before any measured claim.
+Focus: residual compliance after cheap attack saturation. Shared infrastructure is in place; domain stages must pass harness validation before any measured claim.
 
 ## Related work
 
@@ -87,7 +86,7 @@ registry and must pass the harness-validation script before any measured claim.
 
 ```bibtex
 @misc{zero_asr_headroom,
-  title        = {When Zero Jailbreak ASR Still Leaves Room to Attack},
+  title        = {What's Left After Easy Jailbreaks Fail},
   author       = {Alana Sung},
   year         = {2026},
   howpublished = {Technical report},

@@ -1,14 +1,14 @@
-# Design Document: When Zero Jailbreak ASR Still Leaves Room to Attack
+# What's Left After Easy Jailbreaks Fail — design
 
 ## 1. Purpose
 
-This document is the method contract for **When Zero Jailbreak ASR Still Leaves Room to Attack**. It specifies what is
+This document is the method contract for **What's Left After Easy Jailbreaks Fail**. It specifies what is
 measured, how measurement is instrumented, which artifacts are produced, and
 which claims are out of scope for the pilot profile.
 
 One-liner: Climb a ladder of attacks from black-box prompting to white-box internal steering, and read the headroom off the gap between the rungs.
 
-Hypothesis: If stronger attacker access recovers ASR after black-box methods saturate, the bottleneck was search; if it does not, the benchmark may already be measuring refusal (or eval-aware compliance) rather than attack power.
+Hypothesis: If stronger attacker access recovers compliance after cheap prompts fail, the bottleneck was search cost; if not, residual refusal (or cue-sensitive compliance) may already dominate.
 
 ## 2. Scope
 
@@ -257,7 +257,7 @@ Run `python orchestration/scaffold2.py` from the meta-repo root after template e
 
 Run `python orchestration/scaffold2.py` from the meta-repo root after template edits.
 
-## 23. Domain methodology: Attack Ladder
+## 23. Domain methodology: Attack-access comparison
 
 ### HarmBench-style subset
 

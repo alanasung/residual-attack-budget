@@ -1,4 +1,4 @@
-# TASK.md — When Zero Jailbreak ASR Still Leaves Room to Attack
+# What's Left After Easy Jailbreaks Fail
 
 ID convention: `I##` infrastructure, `D##` data, `M##` modelling / hooks,
 `E##` experiments, `A##` ablations, `S##` sweeps, `R##` reporting.

@@ -65,24 +65,11 @@ Residual: keyword judge is still local-heuristic (not a frontier refusal classif
 
 Residual: micro-pilot n remains underpowered for frontier World claims; keyword judge still local-heuristic.
 
-## Codex problem-statement fit
+## Scientific validity notes (Codex)
 
-Model: `gpt-5.6-sol` · gates: `match` + `validate` · 2026-08-09
-Artifacts: `orchestration/out/match/adversarial-headroom.md`, `orchestration/out/validate/adversarial-headroom.md`
+Model: `gpt-5.6-sol`. Full artifacts live in the private orchestration tree.
 
-- **Match verdict:** `MATERIAL_DRIFT` · methods `mixed_proxy`
-- **Validate overall:** `SERIOUS_PROBLEMS` · fit `MATERIAL_DRIFT` · feasibility `RUNNABLE_IF_SHRUNK`
-- **Match summary:** A substantial and unusually honest attack-ladder scaffold, but its executable pilot attacks abstract category placeholders rather than safety-benchmark behaviors, so it cannot answer the mentor's World 1 versus World 2 question.
-- **Validate summary:** A polished scaffold surrounds an experiment that is presently invalid: it measures attacks on unspecified proxy topics with a generic keyword judge, so it cannot resolve the mentor's World-1-versus-World-2 question.
+- **Framing:** What's Left After Easy Jailbreaks Fail — residual compliance after cheap attack saturation.
+- **Methods fidelity:** mixed measured / proxy paths; smoke stays synthetic.
+- **Open scientific gaps:** protocol confounds, proxy corpora, and claim gating remain; do not present pilots as settled empirical results.
 
-### Top drift / missing (match)
-- opaque category placeholders replace harmful benchmark behaviors, changing the scientific question
-- headline headroom uses forced prefill rather than an informative realizable upper-bound rung
-- eval-awareness cues are written into fields that materialize_request ignores
-- the prompt-injection track does not instantiate an instruction-hierarchy conflict
-
-### Blocking (validate)
-- `src/headroom/headroom/benchmark.py`: The benchmark contains hashes and category labels, not behaviors that a model can meaningfully comply with or refuse.
-- `src/headroom/headroom/judge.py`: The judge rewards generic fluent non-refusal and cannot determine behavior-specific harmful compliance.
-- `src/headroom/headroom/continuous.py`: Continuous embeddings affect only the first generated token; subsequent decoding discards the optimized suffix.
-- `src/headroom/headroom/capability.py`: The benign twins are a generic safe procedure and are not capability matched to each harmful behavior.

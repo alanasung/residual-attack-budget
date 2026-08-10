@@ -1,4 +1,4 @@
-# Technical appendix
+# What's Left After Easy Jailbreaks Fail
 
 ## A1. Technical note 1
 

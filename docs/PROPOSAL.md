@@ -1,6 +1,5 @@
-# When Zero Jailbreak ASR Still Leaves Room to Attack
+# What's Left After Easy Jailbreaks Fail
 
-**Target project.** Measuring Headroom in Adversarial Evaluations
 **Research areas.** AI security; Evaluations; Misuse risk
 
 ## Summary
@@ -9,7 +8,7 @@ Climb a ladder of attacks from black-box prompting to white-box internal steerin
 
 ## Hypothesis
 
-Measured attack success rate is substantially a function of attacker access rather than of the model's intrinsic willingness. Relaxing the discrete constraint should recover ASR that black-box search could not find. Crucially, small or absent headroom is an accepted and informative outcome: it is evidence for the motivating World 2, and the design must be able to report it as a finding rather than as a failed experiment.
+If stronger attacker access recovers compliance after cheap prompts fail, the bottleneck was search cost; if not, residual refusal (or cue-sensitive compliance) may already dominate.
 
 A hypothesis worth testing has to be able to lose. This one loses if the
 measurements below come back null, and the design is built so that a null is
@@ -48,7 +47,7 @@ reportable rather than a dead end.
 
 ## How the result should be interpreted
 
-Forced prefill demonstrates that the capability exists and is gated at the point of refusal. It does NOT by itself establish that PAIR or GCG failed for discrete-optimization reasons, and it is compatible with the motivating World 2. The World 1 versus World 2 inference rests on the combination of the prefill ceiling, the projected-back-to-tokens rung, and the GCG optimization diagnostics, and the writeup must say so.
+Forced prefill demonstrates that the capability exists and is gated at the point of refusal. It does NOT by itself establish that PAIR or GCG failed for discrete-optimization reasons, and it is compatible with the motivating refusal-limited regime. The search-limited regime versus refusal-limited regime inference rests on the combination of the prefill ceiling, the projected-back-to-tokens rung, and the GCG optimization diagnostics, and the writeup must say so.
 
 ## Feasibility
 

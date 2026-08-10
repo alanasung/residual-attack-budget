@@ -326,7 +326,7 @@ def stage_evaluate(cfg: DictConfig, run_dir: Path) -> dict[str, Any]:
         world_hypothesis = "world1_search_limited_refusal"
     is_world2 = world_hypothesis.startswith("world2")
     # World-2 headlines require CI upper bound below falsification + judge calibration.
-    # World-1 headlines still require judge_calibration_ok.
+    # Saturation-regime headlines still require judge_calibration_ok.
     if is_world2:
         world_claim_ok = bool(judge_cal["judge_calibration_ok"] and ci_clears)
     else:

@@ -1,4 +1,4 @@
-# Experiment plan
+# Experiment plan — What's Left After Easy Jailbreaks Fail
 
 Stage-by-stage design. Each stage is registered in `src/headroom/stages.py`
 and appears in `python -m headroom stages`.

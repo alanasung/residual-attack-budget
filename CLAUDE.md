@@ -1,10 +1,10 @@
-# Build instructions
+# What's Left After Easy Jailbreaks Fail
 
 Context for coding agents working in this repository.
 
 ## What this is
 
-Research implementation of "When Zero Jailbreak ASR Still Leaves Room to Attack".
+Research implementation of "What's Left After Easy Jailbreaks Fail".
 
 ## Hard constraints
 

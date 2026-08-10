@@ -1,12 +1,12 @@
 # Related work
 
-This note situates **When Zero Jailbreak ASR Still Leaves Room to Attack** against related literature.
+This note situates **What's Left After Easy Jailbreaks Fail** against related literature.
 
 ## Positioning
 
 Climb a ladder of attacks from black-box prompting to white-box internal steering, and read the headroom off the gap between the rungs.
 
-The design hypothesis is: Measured attack success rate is substantially a function of attacker access rather than of the model's intrinsic willingness. Relaxing the discrete constraint should recover ASR that black-box search could not find. Crucially, small or absent headroom is an accepted and informative outcome: it is evidence for the motivating World 2, and the design must be able to report it as a finding rather than as a failed experiment.
+The design hypothesis is: If stronger attacker access recovers compliance after cheap prompts fail, the bottleneck was search cost; if not, residual refusal (or cue-sensitive compliance) may already dominate.
 
 ## Engagement rules
 

@@ -1,9 +1,9 @@
-# Repository guide
+# What's Left After Easy Jailbreaks Fail
 
 See [CLAUDE.md](CLAUDE.md) for the full build instructions; this file exists so
 that agents which look for `AGENTS.md` find the same context.
 
-Project: When Zero Jailbreak ASR Still Leaves Room to Attack
+Project: What's Left After Easy Jailbreaks Fail
 Package: `src/headroom`
 Entry point: `python -m headroom --help`
 

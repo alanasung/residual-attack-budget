@@ -2,7 +2,7 @@
 
 ## Codex GPT-5 Sol (p2)
 - Verdict: ALIGNED
-- Summary: Unusually faithful to the motivating attack-ladder / World-1-vs-2 question; remaining notes are interpretation (prefill as ceiling, injection threat-model separation) rather than wrong question.
+- Summary: Unusually faithful to the motivating residual-compliance-after-saturation question; remaining notes are interpretation (prefill as ceiling, injection threat-model separation) rather than wrong question.
 - Detail: `orchestration/out/align/adversarial-headroom.json`
 
 ## Grok (p2 dual)
